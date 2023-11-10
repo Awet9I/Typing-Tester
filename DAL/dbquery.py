@@ -1,9 +1,12 @@
+import sys
+
+# setting path
+sys.path.append("..")
+
+from Text_Generator.text_generator import generator
 import sqlite3
-import main as gen
 import random
-from threading import Thread
 import multiprocessing
-from pymemcache.client import base
 
 
 # create db connection
@@ -17,8 +20,22 @@ def create_connection(dbfile):
     return conn
 
 
-# Insert data to database query
-def create_text(conn, text, text_len):
+def insert_text_process(result_queue):
+    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"
+
+    # create a database connection
+    conn = create_connection(database)
+    with conn:
+        # create a new project
+        data = generator("Summer day", 300)
+        text_len = len(data.encode("utf-8"))
+        text_id = insert_text_data(conn, data, text_len)
+        # print(text_id)
+        result_queue.put("Text generation and insertion complete")
+        return text_id
+
+
+def insert_text_data(conn, text, text_len):
     cur = conn.cursor()
     sql = """ INSERT INTO Text(text,length)
               VALUES(?,?) """
@@ -31,65 +48,56 @@ def create_text(conn, text, text_len):
     return cur.lastrowid
 
 
-# insert data
-def insert_text(result_queue):
-    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\tutorial.db"
+# Insert data to database query
+def create_table(conn):
+    sql_create_text_table = """ CREATE TABLE IF NOT EXISTS Text (
+                                        text text NOT NULL,
+                                        length text
+                                    ); """
 
-    # create a database connection
-    conn = create_connection(database)
-    with conn:
-        # create a new project
-        data = gen.filtered_text
-        text_len = len(data.encode("utf-8"))
-        text_id = create_text(conn, data, text_len)
-        print(text_id)
-        result_queue.put("Text generation and insertion complete")
-        return text_id
+    if conn is not None:
+        try:
+            c = conn.cursor()
+            c.execute(sql_create_text_table)
+        except ConnectionError as e:
+            print(e)
 
 
 # fetch data
-def db_query():
-    # everytime you query a text from the db, inser a new text. but it should run in the background
-    # insert_text()
-    text = {}
-    print("Starting background task...")
-    result_queue = multiprocessing.Queue()
-    process = multiprocessing.Process(target=insert_text, args=(result_queue,))
-    process.start()
-    print("Main thread is carrying on...")
-    random_id = random.randint(1, 4)
-
-    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\tutorial.db"
+def db_query_all():
+    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"
 
     # create a database connection
     conn = create_connection(database)
+    # everytime you query a text from the db, inser a new text. but it should run in the background
+    # insert_text()
+
+    text = {}
+
+    result_queue = multiprocessing.Queue()
+    process = multiprocessing.Process(target=insert_text_process, args=(result_queue,))
+    process.start()
+
     with conn:
-        sql = f"SELECT text FROM Text WHERE rowid={random_id}"
         cur = conn.cursor()
-        cur.execute(sql)
-        conn.commit()
-        data = cur.fetchall()
+        table_name = "Text"
+        check_table_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';"
+        cur.execute(check_table_query)
 
-        text[random_id] = data
+        result = cur.fetchone()
+        if result:
+            sql = f"SELECT ROWID, * FROM Text"
 
-    return text
+            cur.execute(sql)
 
-
-def main():
-    client = base.Client(("localhost", 11211))
-
-    data = db_query()
-    key = str(list(data.keys())[0])
-    values = list(data.values())[0]
-    # Convert the list of values to a string representation
-    value_str = " ".join(map(str, values))
-
-    # Encode the value as UTF-8 bytes
-    value_bytes = value_str.encode("utf-8")
-    client.set(key, value_bytes)
-
-    print(client.get(key))
-
-
-if __name__ == "__main__":
-    main()
+            conn.commit()
+            data = cur.fetchall()
+            if data == []:
+                insert_text_process()
+            for item in data:
+                id_value, data_value, value_len = item
+                text[id_value] = data_value
+            return text
+        else:
+            create_table(conn)
+            # insert_text_data()
