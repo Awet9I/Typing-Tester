@@ -39,14 +39,14 @@ def generator(phrase: str, num_word):
     model = pipeline("text-generation", model="gpt2")
     generated_text = ""
     # num_word is number of words to generate
-    while len(generated_text) < num_word:  # control loop with number of words
+    while len(generated_text) < int(num_word):  # control loop with number of words
         # Generate text
         sentence = model(
             phrase_cap + generated_text,
             do_sample=True,
             top_k=50,
             temperature=0.9,
-            max_length=num_word - len(generated_text),  # Adjust max_length
+            max_length=int(num_word) - len(generated_text),  # Adjust max_length
         )
 
         if len(sentence) == 0:

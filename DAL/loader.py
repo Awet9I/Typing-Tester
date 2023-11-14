@@ -2,39 +2,47 @@ import sys
 import json
 
 # setting path
-sys.path.append("..")
+# sys.path.append("")
 
-from dbquery import db_query_all
+# from dbquery import db_query_all, insert_text_data
+from DAL import dbquery as db
+
+all_data = []
 
 
 # Function to clean the text within a dictionary
 def clean_text_in_dict(dic):
     cleaned_dict = {}
-    for key, value in dic.items():
-        cleaned_value = value.replace(r"\"", '"')
+    value_list = []
+    key, value = list(dic.items())[0]
+    for item in value:
+        cleaned_value = item.replace(r"\"", '"')
         cleaned_value2 = cleaned_value.replace(r"\'", "'")
-        cleaned_dict[key] = cleaned_value2
+        value_list.append(cleaned_value2)
+    cleaned_dict[key] = value_list
     return cleaned_dict
 
 
-def main():
-    data = db_query_all()
+def insert_data(phrase, word_count):
+    res = db.insert_text_data(phrase, word_count)
+    if res:
+        return True
+    else:
+        return False
 
-    for key, value in data.items():
-        text = {}
-        key_str = str(key)
-        text[key_str] = value
 
-        with open("../test1.txt", "a", encoding="utf8") as file:
-            file.write(json.dumps(text) + "\n")
+def fetch_data():
+    global all_data
 
-    # Create an empty list to store the dictionaries
-    data_list = []
-    with open("../test1.txt", "r", encoding="utf8") as file:
-        for line in file:
-            data = json.loads(line)
-            data_list.append(data)
-    cleaned_data_list = [clean_text_in_dict(dic) for dic in data_list]
+    data = db.db_query_all()
+    if len(data) == 0:
+        return all_data
+    # loop the list containing all data, return a dict object
+    for obj in data:
+        all_data.append(obj)
+
+    cleaned_data_list = [clean_text_in_dict(dic) for dic in all_data]
+    return cleaned_data_list
 
     # Now, cleaned_data_list contains all the dictionaries with cleaned text
     """for dic_item in cleaned_data_list:
@@ -42,8 +50,9 @@ def main():
 """
 
 
+"""
 if __name__ == "__main__":
-    main()
+    main()"""
 
 
 """ data = json.loads(line)

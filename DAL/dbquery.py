@@ -20,47 +20,60 @@ def create_connection(dbfile):
     return conn
 
 
-def insert_text_process(result_queue):
-    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"
-
-    # create a database connection
-    conn = create_connection(database)
-    with conn:
-        # create a new project
-        data = generator("Summer day", 300)
-        text_len = len(data.encode("utf-8"))
-        text_id = insert_text_data(conn, data, text_len)
-        # print(text_id)
-        result_queue.put("Text generation and insertion complete")
-        return text_id
-
-
-def insert_text_data(conn, text, text_len):
-    cur = conn.cursor()
-    sql = """ INSERT INTO Text(text,length)
-              VALUES(?,?) """
-
-    cur = conn.cursor()
-    cur.execute(sql, [text, text_len])
-    conn.commit()
-
-    # lastrowid attribute of the Cursor object to return the generated
-    return cur.lastrowid
-
-
 # Insert data to database query
-def create_table(conn):
+def create_table(conn, phrase, word_count):
     sql_create_text_table = """ CREATE TABLE IF NOT EXISTS Text (
                                         text text NOT NULL,
-                                        length text
+                                        phrase text NOT NULL,
+                                        wordCount text
                                     ); """
 
     if conn is not None:
         try:
             c = conn.cursor()
             c.execute(sql_create_text_table)
+            res = c.execute("SELECT name FROM sqlite_master")
+            is_created = res.fetchone()
+            if is_created:
+                text = generator(phrase, word_count)
+                sql = """ INSERT INTO Text(text,phrase,word_count)
+                VALUES(?,?,?) """
+
+                c.execute(sql, [text, phrase, word_count])
+                conn.commit()
+
+                # lastrowid attribute of the Cursor object to return the generated
+                return c.lastrowid
+
         except ConnectionError as e:
             print(e)
+
+
+def insert_text_data(phrase, word_count):
+    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"
+    # create a database connection
+    conn = create_connection(database)
+    cur = conn.cursor()
+    with conn:
+        cur = conn.cursor()
+        table_name = "Text"
+        check_table_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';"
+        cur.execute(check_table_query)
+
+        result = cur.fetchone()
+        if result:
+            text = generator(phrase, word_count)
+            sql = """ INSERT INTO Text(text,phrase,wordCount)
+                VALUES(?,?,?) """
+
+            cur.execute(sql, [text, phrase, word_count])
+            conn.commit()
+
+            # lastrowid attribute of the Cursor object to return the generated
+            return cur.lastrowid
+        else:
+            res = create_table(conn, phrase, word_count)
+            return res
 
 
 # fetch data
@@ -73,31 +86,38 @@ def db_query_all():
     # insert_text()
 
     text = {}
-
-    result_queue = multiprocessing.Queue()
-    process = multiprocessing.Process(target=insert_text_process, args=(result_queue,))
-    process.start()
+    all_text = []
 
     with conn:
         cur = conn.cursor()
-        table_name = "Text"
+        """table_name = "Text"
         check_table_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';"
         cur.execute(check_table_query)
 
         result = cur.fetchone()
-        if result:
-            sql = f"SELECT ROWID, * FROM Text"
+        if result:"""
 
+        table_name = "Text"
+        check_table_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';"
+        cur.execute(check_table_query)
+        res = cur.fetchone()
+        print(res)
+        if res:
+            # fetch with id includeded in the result
+            sql = f"SELECT ROWID, * FROM Text"
             cur.execute(sql)
 
             conn.commit()
             data = cur.fetchall()
-            if data == []:
-                insert_text_process()
-            for item in data:
-                id_value, data_value, value_len = item
-                text[id_value] = data_value
-            return text
-        else:
-            create_table(conn)
+            # if data == []:
             # insert_text_data()
+            for item in data:
+                id_value, data_value, phrase, word_count = item
+                text[id_value] = [data_value, phrase, word_count]
+                all_text.append(text)
+            return all_text
+        else:
+            return all_text
+        # else:
+        # create_table(conn)
+        # insert_text_data()
