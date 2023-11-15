@@ -8,11 +8,12 @@ from DAL import loader
 
 play = True
 session_data = []
-phrases = ["summer flower", "work hard"]
+phrases = ["summer flower", "work hard", "programing is fun"]
 
 
 def input_handler():
     global play
+    global session_data
     print("Choose Phrase to generate text!")
     while play:
         user_input = input()
@@ -21,10 +22,23 @@ def input_handler():
         else:
             found = user_input in phrases
             if found:
+                word_count = input("choose number of words to generate")
                 for data in session_data:
                     key, value = list(data.items())[0]
-                    if value[1] == user_input:
+                    if value[1] == user_input and value[2] == word_count:
                         print(value[0])
+
+                print("There is no text by this phrase")
+                word_count = input(
+                    "choose the number of words to generate by this phrase"
+                )
+                is_gen = loader.insert_data(user_input, word_count)
+                if is_gen:
+                    session_data.append(is_gen)
+                    key, value = list(is_gen.items())[0]
+                    print(value[1])
+                else:
+                    print("text is not generated")
 
 
 def main():

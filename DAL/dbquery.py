@@ -43,7 +43,10 @@ def create_table(conn, phrase, word_count):
                 conn.commit()
 
                 # lastrowid attribute of the Cursor object to return the generated
-                return c.lastrowid
+                if c.lastrowid:
+                    obj = {}
+                    obj[c.lastrowid] = [text, phrase, word_count]
+                    return obj
 
         except ConnectionError as e:
             print(e)
@@ -70,7 +73,11 @@ def insert_text_data(phrase, word_count):
             conn.commit()
 
             # lastrowid attribute of the Cursor object to return the generated
-            return cur.lastrowid
+            if cur.lastrowid:
+                obj = {}
+                obj[cur.lastrowid] = [text, phrase, word_count]
+                return obj
+
         else:
             res = create_table(conn, phrase, word_count)
             return res
@@ -85,7 +92,6 @@ def db_query_all():
     # everytime you query a text from the db, inser a new text. but it should run in the background
     # insert_text()
 
-    text = {}
     all_text = []
 
     with conn:
@@ -112,6 +118,7 @@ def db_query_all():
             # if data == []:
             # insert_text_data()
             for item in data:
+                text = {}
                 id_value, data_value, phrase, word_count = item
                 text[id_value] = [data_value, phrase, word_count]
                 all_text.append(text)

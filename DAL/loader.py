@@ -26,9 +26,11 @@ def clean_text_in_dict(dic):
 def insert_data(phrase, word_count):
     res = db.insert_text_data(phrase, word_count)
     if res:
-        return True
+        filtered_text = clean_text_in_dict(res)
+        return filtered_text
     else:
-        return False
+        obj = {}
+        return obj
 
 
 def fetch_data():
