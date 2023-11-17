@@ -25,7 +25,7 @@ def create_table(conn, phrase, word_count):
     sql_create_text_table = """ CREATE TABLE IF NOT EXISTS Text (
                                         text text NOT NULL,
                                         phrase text NOT NULL,
-                                        wordCount text
+                                        word_count text
                                     ); """
 
     if conn is not None:
@@ -66,7 +66,7 @@ def insert_text_data(phrase, word_count):
         result = cur.fetchone()
         if result:
             text = generator(phrase, word_count)
-            sql = """ INSERT INTO Text(text,phrase,wordCount)
+            sql = """ INSERT INTO Text(text,phrase,word_count)
                 VALUES(?,?,?) """
 
             cur.execute(sql, [text, phrase, word_count])
