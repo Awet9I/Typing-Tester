@@ -1,6 +1,48 @@
 import sys
 from calculator import calc
 from DAL import loader
+import json
+import plotter as pl
+
+
+play = True
+counter = 0
+result_accumulator = []
+all_session_results = []
+
+
+def plot(items):
+    pl.plot_results(items)
+
+
+def final_res():
+    """global all_session_results
+    global result_accumulator
+    global counter"""
+    if len(result_accumulator) != 0:
+        phrase = result_accumulator[0]
+        word_count = result_accumulator[1]
+        accuracy = result_accumulator[2]
+        time_str = result_accumulator[3]
+
+        res = {}
+        res[counter] = [phrase, word_count, accuracy, time_str]
+        all_session_results.append(res)
+        result_accumulator.clear()
+
+    list_to_plot = []
+    for item in all_session_results:
+        list_to_plot.append(item)
+    return list_to_plot
+
+
+def save_to_file(filename):
+    if len(all_session_results) == 0:
+        print("\nNo results to save!\n")
+        return False
+    with open(filename, "a", encoding="utf8") as file:
+        file.write(json.dumps(all_session_results) + "\n")
+        return True
 
 
 def extract_phrases(session_data):
@@ -8,7 +50,10 @@ def extract_phrases(session_data):
 
 
 def final_result_calculator(test_text):
+    global counter
+    global result_accumulator
     res = calc.calculator(test_text)
+    counter += 1
     time_elapsed, accuracy = list(res.items())[0]
     minute = time_elapsed / 60
     remaining_seconds = time_elapsed % 60
@@ -19,21 +64,35 @@ def final_result_calculator(test_text):
     time_str = " ".join(
         f"{value} {unit + 's'*(value != 1)}" for unit, value in time_units
     )
-
+    result_accumulator.append(accuracy)
+    result_accumulator.append(time_elapsed)
+    final_res()
     print(f"\n ### Your accuracy is {accuracy}% and your time is {time_str} ###\n")
 
 
 def handle_user_input(phrases, session_data, word_counts):
-    while True:
+    global play
+    global result_accumulator
+    while play:
         print("####### Choose Phrase to generate text! ####### \n")
         for item in phrases:
             print(f"[{item}]")
         user_input = input("\nType your choice: ").strip()
 
         if user_input.upper() == "Q":
+            play = False
             break
         elif user_input == "S":
-            print("\nsaving to file")
+            filename = input("\n choose filename: ")
+            saved = save_to_file(filename)
+            if saved:
+                play = False
+                break
+            else:
+                continue
+        elif user_input == "P":
+            plot(all_session_results)
+
         elif user_input in phrases:
             print(f"\n {word_counts}")
             word_count = input("\nChoose number of words to generate: ").strip()
@@ -51,6 +110,10 @@ def handle_user_input(phrases, session_data, word_counts):
                 print("\n### Start typing and press Enter when you finish ###\n")
                 test_text = data
                 print(f"\n{test_text}\n")
+
+                result_accumulator.append(user_input)
+                result_accumulator.append(word_count)
+
                 final_result_calculator(test_text)
             else:
                 print(
@@ -68,6 +131,9 @@ def handle_user_input(phrases, session_data, word_counts):
                         key, value = list(is_gen.items())[0]
                         test_text = value[0]
                         print(f"\n{test_text}\n")
+                        result_accumulator.append(user_input)
+                        result_accumulator.append(word_count)
+
                         final_result_calculator(test_text)
                     else:
                         print("\n####### Text is not generated #######\n")
@@ -85,6 +151,8 @@ def handle_user_input(phrases, session_data, word_counts):
                 key, value = list(is_gen.items())[0]
                 test_text = value[0]
                 print(f"\n{test_text}\n")
+                result_accumulator.append(user_input)
+                result_accumulator.append(word_count)
                 final_result_calculator(test_text)
             else:
                 print("\n####### Text is not generated #######\n")
@@ -94,9 +162,9 @@ def main():
     print(
         "\n######################## Welcome to Typing Tester! ###########################\n"
     )
-    print("                 ####### Enter 'Q' to quit the test #######\n")
-
-    play = True
+    print("\n                 ####### Enter 'Q' to quit the test #######\n")
+    print("\n                 ####### Enter 'S' to save and quit the test #######\n")
+    global play
     phrases = []
     session_data = []
     word_counts = ["10", "50", "100", "200", "300"]
@@ -135,6 +203,9 @@ def main():
                 key, value = list(res.items())[0]
                 test_text = value[0]
                 print(f"\n{test_text}\n")
+                res = {}
+                res[value[1]] = value[2]
+                result_accumulator.append(res)
                 final_result_calculator(test_text)
             else:
                 print("### Something went wrong, data not added! ### \n")

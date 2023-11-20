@@ -107,7 +107,7 @@ def db_query_all():
         check_table_query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';"
         cur.execute(check_table_query)
         res = cur.fetchone()
-        print(res)
+
         if res:
             # fetch with id includeded in the result
             sql = f"SELECT ROWID, * FROM Text"
