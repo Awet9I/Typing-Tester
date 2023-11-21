@@ -85,6 +85,8 @@ def plot_results(data):
         # Show the plot
         plt.tight_layout()
         plt.show()
+    else:
+        print("\nNo result to plot!\n")
 
 
 # Call the function to plot the results

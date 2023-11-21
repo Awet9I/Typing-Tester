@@ -92,6 +92,11 @@ def handle_user_input(phrases, session_data, word_counts):
                 continue
         elif user_input == "P":
             plot(all_session_results)
+        elif user_input == ":wq":
+            loader.drop_table()
+            print("Database cleared and quited!")
+            play = False
+            break
 
         elif user_input in phrases:
             print(f"\n {word_counts}")
@@ -162,8 +167,10 @@ def main():
     print(
         "\n######################## Welcome to Typing Tester! ###########################\n"
     )
-    print("\n                 ####### Enter 'Q' to quit the test #######\n")
-    print("\n                 ####### Enter 'S' to save and quit the test #######\n")
+    print(
+        "\n[ Enter 'Q' to quit the test, Enter 'S' to save and quit the test, Enter 'P' to to plot your result, Enter ':wq' to delete stored data and quite the test ]\n"
+    )
+
     global play
     phrases = []
     session_data = []
@@ -205,7 +212,8 @@ def main():
                 print(f"\n{test_text}\n")
                 res = {}
                 res[value[1]] = value[2]
-                result_accumulator.append(res)
+                result_accumulator.append(user_input)
+                result_accumulator.append(word_count)
                 final_result_calculator(test_text)
             else:
                 print("### Something went wrong, data not added! ### \n")

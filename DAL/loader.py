@@ -1,10 +1,3 @@
-import sys
-import json
-
-# setting path
-# sys.path.append("")
-
-# from dbquery import db_query_all, insert_text_data
 from DAL import dbquery as db
 
 all_data = []
@@ -37,34 +30,15 @@ def fetch_data():
     global all_data
 
     data = db.db_query_all()
-    if len(data) == 0:
-        return all_data
-    # loop the list containing all data, return a dict object
-    for obj in data:
-        all_data.append(obj)
+    if len(data) != 0:
+        # loop the list containing all data, return a dict object
+        for obj in data:
+            all_data.append(obj)
 
-    cleaned_data_list = [clean_text_in_dict(dic) for dic in all_data]
-    return cleaned_data_list
-
-    # Now, cleaned_data_list contains all the dictionaries with cleaned text
-    """for dic_item in cleaned_data_list:
-        print(dic_item)
-"""
+        cleaned_data_list = [clean_text_in_dict(dic) for dic in all_data]
+        return cleaned_data_list
+    return all_data
 
 
-"""
-if __name__ == "__main__":
-    main()"""
-
-
-""" data = json.loads(line)
-            str_dump = json.dumps(data)
-            # Remove backslashes before double quotes
-            filtered_text1 = str_dump.replace(r"\"", '"')
-
-            # Remove backslashes before single quotes
-            filtered_text = filtered_text1.replace(r"\'", "'")
-            dic_item = json.loads(filtered_text)
-
-            print(dic_item)
-"""
+def drop_table():
+    db.drop_table()
