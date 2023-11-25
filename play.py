@@ -38,7 +38,7 @@ def final_res():
 
 def save_to_file(filename):
     if len(all_session_results) == 0:
-        print("\nNo results to save!\n")
+        print("\n No results to save!\n")
         return False
     with open(filename, "a", encoding="utf8") as file:
         file.write(json.dumps(all_session_results) + "\n")
@@ -86,9 +86,12 @@ def handle_user_input(phrases, session_data, word_counts):
             filename = input("\n choose filename: ")
             saved = save_to_file(filename)
             if saved:
-                play = False
-                break
+                # play = False
+                # break
+                print(f"\n Saved to {filename}\n")
+                continue
             else:
+                print("\n Not saved to file!\n")
                 continue
         elif user_input == "P":
             plot(all_session_results)
