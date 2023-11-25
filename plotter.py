@@ -1,120 +1,104 @@
 import matplotlib.pyplot as plt
-
 import numpy as np
-from play import final_res
-from collections import deque
 
 
+# Define the plot_results function
 def plot_results(data):
-    """data = [
-        {"1": ["work hard", "50", "80", "3 seconds"]},
-        {"2": ["work smart", "100", "90", "5 seconds"]},
-        {"3": ["work smart", "300", "70", "7 seconds"]},
-    ]"""
-    # data = final_res()
-    # Initialize empty lists to store extracted values
     if data:
+        # Initialize empty lists to store extracted values
+        labels = []
         word_counts = []
         accuracies = []
         times = []
+        phrases = []
+        time_str = []
 
         # Iterate through the data and extract values
         for item in data:
             for key, value in item.items():
                 # Extract values and convert to appropriate types
+                label = f"{value[0]} ({key})"
+                phrase = value[0]
                 word_count = int(value[1].strip())
                 accuracy = float(value[2])
                 time = float(value[3])
-
+                minute = int(time / 60)
+                remaining_seconds = int(time % 60)
                 # Append extracted values to the respective lists
+                phrases.append(phrase)
+                labels.append(label)
                 word_counts.append(word_count)
                 accuracies.append(accuracy)
                 times.append(time)
+                time_str.append(f"{minute:02d}:{remaining_seconds:02d}")
 
-                # Append extracted values to the respective lists
+        # Create a 2x2 subplot structure
+        fig, axs = plt.subplots(2, 2, figsize=(14, 10))
 
-                word_counts.append(word_count)
-                accuracies.append(accuracy)
-                times.append(time)
-        # Calculate average accuracy
-        avg_accuracy = sum(accuracies) / len(accuracies)
-        # Create a plot
-        # Create a plot
-        fig, ax = plt.subplots(figsize=(10, 6))
+        # Create the bar chart in the first subplot
+        x = np.arange(len(labels))
+        width = 0.35
+        axs[0, 0].bar(x, accuracies, width, label="Accuracy")
+        axs[0, 0].set_xlabel("Result")
+        axs[0, 0].set_ylabel("Accuracy (%)")
+        axs[0, 0].set_title("Accuracy by Result")
+        axs[0, 0].set_xticks(x)
+        axs[0, 0].set_xticklabels(labels, rotation=45, ha="right")
+        axs[0, 0].legend()
 
-        # Scatter plot
-        sc = ax.scatter(
-            word_counts,
-            accuracies,
-            c=times,
-            cmap="viridis",
-            marker="o",
-            label="Data Points",
+        # Add average accuracy annotation above the bars
+        for i, bar in enumerate(axs[0, 0].containers[0]):
+            height = bar.get_height()
+            axs[0, 0].annotate(
+                f"{height:.2f}%",
+                xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 3),  # 3 points vertical offset
+                textcoords="offset points",
+                ha="center",
+                va="bottom",
+            )
+
+        # Populate the second subplot with a table, replacing the old ax_table
+        cell_text = []
+        for i in range(len(labels)):
+            time_per_word = (word_counts[i] * 60) / times[i]
+            cell_text.append(
+                [
+                    f"{phrases[i]}",
+                    f"{word_counts[i]}",
+                    time_str[i],
+                    f"{time_per_word:.2f} word/m",
+                ]
+            )
+
+        table = axs[1, 0].table(
+            cellText=cell_text,
+            colLabels=["Phrase", "Word Count", "Time (s)", "Time/Word"],
+            cellLoc="center",
+            loc="center",
         )
-        cbar = plt.colorbar(sc, label="Time (s)")
+        table.auto_set_font_size(False)
+        table.set_fontsize(12)
+        table.scale(1, 1.5)
+        axs[1, 0].axis("off")  # Turn off the axis
 
-        # Line plot to connect data points
-        ax.plot(
-            word_counts,
-            accuracies,
-            linestyle="-",
-            marker="o",
-            color="b",
-            label="Connected Line",
-        )
+        # Adjust the remaining subplots as placeholders or for future use
+        axs[0, 1].axis("off")  # Placeholder for future plot
+        axs[1, 1].axis("off")  # Placeholder for future plot
 
-        # Add average accuracy annotation beside the colorbar
-        avg_annotation = f"Average Accuracy: {avg_accuracy:.2f}%"
-        ax.annotate(
-            avg_annotation,
-            xy=(1.2, 0.9),
-            xycoords="axes fraction",
-            fontsize=12,
-            color="red",
-            rotation=0,
-            va="center",
-            bbox=dict(boxstyle="round,pad=0.3", edgecolor="red", facecolor="white"),
-        )
-
-        ax.set_xlabel("Word Count")
-        ax.set_ylabel("Accuracy (%)")
-        ax.set_title("Accuracy vs. Word Count")
-        ax.legend()
-        ax.grid(True)
-
-        # Show the plot
+        # Adjust layout
         plt.tight_layout()
         plt.show()
+
     else:
         print("\nNo result to plot!\n")
 
 
-# Call the function to plot the results
-# plot_results()
-"""def plotter():
-    games = []
-    result = []
-    
-    final_list = final_res()
-    data_points = deque(maxlen=len(final_list))
+# Example usage
+"""data = [
+    {"1": ["work hard", "50", "80", "3"]},
+    {"2": ["work smart", "100", "100", "5"]},
+    {"3": ["work smart", "300", "70", "70"]},
+]
 
-    for data in final_list:
-        for key, value in data.items(): 
-          games.append(key)
-          for i in value:
-           result.append(value[i])
-    
-    labels = []
-    for i in range(len(games)):
-       labels.append(f"game{i+1}")
-    
-    fig, ax = plt.subplots()
-    line = ax.plot([])
-
-    for i in range(len(final_list)):
-       
-       new_x = result[i]
-
-    x = np.array[]
-    y = np.array[25, 45, 65, 85]
-"""
+plot_results(data)"""

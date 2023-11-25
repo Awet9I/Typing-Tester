@@ -195,7 +195,7 @@ def main():
                 play = False
                 break
 
-            phrases.append(user_input)
+            # phrases.append(user_input)
             print(f"\n {word_counts}")
             word_count = input("\nChoose number of words!: ").strip()
 
@@ -206,7 +206,7 @@ def main():
             res = loader.insert_data(user_input, word_count)
 
             if res:
-                session_data.append(res)
+                # session_data.append(res)
                 key, value = list(res.items())[0]
                 test_text = value[0]
                 print(f"\n{test_text}\n")
