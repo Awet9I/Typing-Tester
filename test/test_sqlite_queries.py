@@ -21,7 +21,6 @@ def execute_query(connection, query):
                 {"2": ["mock_text2", "mock_phrase2", "50"]},
             ],
         ),
-        # Add more test cases as needed
     ],
 )
 @patch("sqlite3.connect")
