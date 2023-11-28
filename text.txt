@@ -189,3 +189,6 @@ data = [
 ]
 
 plot_results(data)
+
+
+""" database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"""

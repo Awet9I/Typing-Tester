@@ -2,16 +2,15 @@ import sys
 
 # setting path
 sys.path.append("..")
-
 from Text_Generator.text_generator import generator
 import sqlite3 as db
 
 
 # create db connection
-def create_connection(dbfile):
+def create_connection():
     conn = None
     try:
-        conn = db.connect(dbfile)
+        conn = db.connect("text_storage.db")
     except db.Error as e:
         print(e)
 
@@ -51,9 +50,8 @@ def create_table(conn, phrase, word_count):
 
 
 def insert_text_data(phrase, word_count):
-    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"
     # create a database connection
-    conn = create_connection(database)
+    conn = create_connection()
     try:
         cur = conn.cursor()
         with conn:
@@ -86,10 +84,8 @@ def insert_text_data(phrase, word_count):
 
 # fetch data
 def db_query_all():
-    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"
-
     # create a database connection
-    conn = create_connection(database)
+    conn = create_connection()
     # everytime you query a text from the db, inser a new text. but it should run in the background
     # insert_text()
 
@@ -131,9 +127,8 @@ def db_query_all():
 
 
 def drop_table():
-    database = r"C:\Users\awet0\OneDrive\ACIT\ACIT4420-1 23H Problem-solving with scripting\Project\TypingTester\text_storage.db"
     # create a database connection
-    conn = create_connection(database)
+    conn = create_connection()
     try:
         with conn:
             cur = conn.cursor()
