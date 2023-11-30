@@ -82,7 +82,7 @@ def handle_user_input(phrases, session_data, word_counts):
         if user_input.upper() == "Q":
             play = False
             break
-        elif user_input == "S":
+        elif user_input.upper() == "S":
             filename = input("\n choose filename: ")
             saved = save_to_file(filename)
             if saved:
@@ -93,7 +93,7 @@ def handle_user_input(phrases, session_data, word_counts):
             else:
                 print("\n Not saved to file!\n")
                 continue
-        elif user_input == "P":
+        elif user_input.upper() == "P":
             plot(all_session_results)
         elif user_input == ":wq":
             loader.drop_table()
