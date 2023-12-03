@@ -36,6 +36,3 @@ def test_calculator_with_empty_text():
 
     # The Jaccard similarity with an empty text should be 0%
     assert result == 0.0
-
-
-# Add more test cases as needed

@@ -1,33 +1,38 @@
-def extractor(final_result):
-    # [{"1": ["work hard", "10", 90, "120"]}]
-    times = []
-
-    for item in final_result:
-        for key, value in item.items():
-            # Extract values and convert to appropriate types
-            time = float(value[3])
-            minute = int(time / 60)
-            remaining_seconds = int(time % 60)
-
-            """time_units = [("minute", minute), ("second", remaining_seconds)]
-            time_units = [
-                (unit, round(value)) for unit, value in time_units if value >= 1
-            ]
-
-            time_str = " ".join(
-                f"{value} {unit + 's'*(value != 1)}" for unit, value in time_units
-            )"""
-            time_str = f"{minute:02d}:{remaining_seconds:02d}"
-            times.append(time_str)
-
-    return times
+import time
+import sys
 
 
-res = [
-    {"1": ["work hard", "10", 90, "120"]},
-    {"2": ["work hard", "10", 90, "20"]},
-    {"1": ["work hard", "10", 90, "145"]},
-]
+def timer():
+    result = {}
+    # Initialize a variable to store the start time
 
-time = extractor(res)
-print(time)
+    start_time = None
+
+    # Initialize a variable to set the timeout (in seconds)
+    timeout_seconds = 2
+
+    # Record the start time when the user starts typing
+    # input("Start typing when ready...")  # Prompt the user to start typing
+    start_time = time.time()
+
+    # Capture user input as a complete line
+    user_input = ""
+    while True:
+        line = sys.stdin.readline()  # Read a complete line
+
+        if not line:  # Check for EOF (End of File)
+            break
+
+        user_input += line
+        time_elapsed = time.time() - start_time
+        # Check for a timeout (no input for the specified time)
+        if time_elapsed > timeout_seconds:
+            time_re = round(time_elapsed, 2)
+            text = line
+            result[time_re] = text
+            return result
+
+
+if __name__ == "__main__":
+    t = timer()
+    print(t)

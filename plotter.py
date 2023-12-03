@@ -61,6 +61,7 @@ def plot_results(data):
         # Populate the second subplot with a table, replacing the old ax_table
         cell_text = []
         for i in range(len(labels)):
+            # calculate word per minute
             time_per_word = (word_counts[i] * 60) / times[i]
             cell_text.append(
                 [
@@ -73,7 +74,7 @@ def plot_results(data):
 
         table = axs[1, 0].table(
             cellText=cell_text,
-            colLabels=["Phrase", "Word Count", "Time (s)", "Time/Word"],
+            colLabels=["Phrase", "Word Count", "Time (s)", "Words per minute"],
             cellLoc="center",
             loc="center",
         )
@@ -82,9 +83,8 @@ def plot_results(data):
         table.scale(1, 1.5)
         axs[1, 0].axis("off")  # Turn off the axis
 
-        # Adjust the remaining subplots as placeholders or for future use
-        axs[0, 1].axis("off")  # Placeholder for future plot
-        axs[1, 1].axis("off")  # Placeholder for future plot
+        axs[0, 1].axis("off")  # Placeholder for more plot
+        axs[1, 1].axis("off")  # Placeholder for more plot
 
         # Adjust layout
         plt.tight_layout()

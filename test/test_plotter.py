@@ -36,7 +36,6 @@ def test_plot_results_with_invalid_data():
         plot_results({["not", "valid", "data"]})
 
 
-# Optional: Test with no data (None)
 def test_plot_results_with_no_data(capsys):
     plot_results(None)
     captured = capsys.readouterr()

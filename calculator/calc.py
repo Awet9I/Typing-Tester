@@ -39,7 +39,7 @@ def timer():
     start_time = None
 
     # Initialize a variable to set the timeout (in seconds)
-    timeout_seconds = 2
+    timeout_seconds = 10
 
     # Record the start time when the user starts typing
     # input("Start typing when ready...")  # Prompt the user to start typing
