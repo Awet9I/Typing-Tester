@@ -3,6 +3,7 @@ from calculator import calc
 from DAL import loader
 import json
 import plotter as pl
+import os
 
 
 play = True
@@ -36,13 +37,31 @@ def final_res():
     return list_to_plot
 
 
+def file_reader(file_name: str):
+    if os.path.exists(file_name) and os.path.getsize(file_name) > 0:
+        with open(file_name, "r", encoding="utf8") as file:
+            for line in file:
+                data = json.loads(line)
+                for item in data:
+                    all_session_results.append(item)
+        print(all_session_results)
+        print("\nSaved results loaded to session result list\n")
+    else:
+        print("\nFile is empty or do not exist\n")
+
+
 def save_to_file(filename):
     if len(all_session_results) == 0:
         print("\n No results to save!\n")
         return False
-    with open(filename, "a", encoding="utf8") as file:
-        file.write(json.dumps(all_session_results) + "\n")
-        return True
+    elif os.path.exists(filename):
+        with open(filename, "a", encoding="utf8") as file:
+            file.write(json.dumps(all_session_results) + "\n")
+            return True
+    else:
+        with open(filename, "a", encoding="utf8") as file:
+            file.write(json.dumps(all_session_results) + "\n")
+            return True
 
 
 def extract_phrases(session_data):
@@ -100,7 +119,9 @@ def handle_user_input(phrases, session_data, word_counts):
             print("Database cleared and quited!")
             play = False
             break
-
+        elif user_input == "L":
+            file_to_load = input("\n choose filename: ")
+            file_reader(file_to_load)
         elif user_input in phrases:
             print(f"\n {word_counts}")
             word_count = input("\nChoose number of words to generate: ").strip()
