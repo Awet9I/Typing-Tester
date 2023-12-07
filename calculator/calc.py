@@ -2,6 +2,8 @@ import time
 import sys
 import math
 
+# Candidat Number: 653
+
 
 #################### Calculator module, handling the text result calculation ################
 def calculator(text):

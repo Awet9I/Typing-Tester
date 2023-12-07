@@ -2,6 +2,9 @@ import sqlite3
 from unittest.mock import Mock, patch
 import pytest
 
+# Candidat Number: 653
+### Tests functions in dbquery module ####
+
 
 def execute_query(connection, query):
     cursor = connection.cursor()

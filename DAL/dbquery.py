@@ -5,6 +5,8 @@ sys.path.append("..")
 from Text_Generator.text_generator import generator
 import sqlite3 as db
 
+# Candidat Number: 653
+
 ######### Database query module ###############
 
 

@@ -1,6 +1,10 @@
 from unittest.mock import patch, Mock
 import sys
 
+# Candidat Number: 653
+### Tests functions in text loader module ####
+
+
 sys.path.append("..")
 from DAL import loader
 

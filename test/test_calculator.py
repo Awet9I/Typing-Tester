@@ -1,6 +1,10 @@
 # test_calculator.py
 import sys
 
+# Candidat Number: 653
+### Tests functions in calculator module ####
+
+
 sys.path.append("..")
 from calculator import calc
 

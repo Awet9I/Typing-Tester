@@ -1,6 +1,8 @@
 import pytest
 import sys
 
+# Candidat Number: 653
+### Tests functions in text generator module ####
 sys.path.append("..")
 from Text_Generator import text_generator as gen
 from transformers import pipeline

@@ -1,5 +1,7 @@
 from DAL import dbquery as db
 
+# Candidat Number: 653
+
 ########### Loadeer module, handling databse and application communication #################
 
 
