@@ -1,23 +1,44 @@
-# Typing-Tester
+# Typing-Tester Application Setup Instructions
 
-To run the application follow the steps:
-For github:
-• Clone repository from :
-• It is recommended to create virtual environment.
-• Create a virtual environment:
-For mac or Linux OS:
-python3 -m venv <dirname>
-For Windows:
-python -m venv <dirname>
-• After creating python virtual environment, activate the environment
-For mac or Linux OS:
-source <dirname>/bin/activate
-For Windows:
-$ cd <dirname>/Script
-$ ./activate
-• When you are inside your virtual environment:
-run :
-$ pip install -r requirements.txt
-• This will install all external libraries used in the project to your virtual environment
-• The application can be started by running from the root directory:
-$ python ./play.py
+To run the application, follow these steps:
+
+## For GitHub:
+- Clone the repository 
+
+## Setting Up the Virtual Environment:
+- It is recommended to create a virtual environment.
+  - **For Mac or Linux OS**:
+    ```
+    python3 -m venv <dirname>
+    ```
+  - **For Windows**:
+    ```
+    python -m venv <dirname>
+    ```
+
+## Activating the Virtual Environment:
+- After creating the Python virtual environment, activate it:
+  - **For Mac or Linux OS**:
+    ```
+    source <dirname>/bin/activate
+    ```
+  - **For Windows**:
+    ```
+    cd <dirname>/Scripts
+    ./activate
+    ```
+
+## Installing Dependencies:
+- When you are inside your virtual environment, run the following to install all external libraries used in the project:
+```
+
+pip install -r requirements.txt
+```
+
+
+## Running the Application:
+- The application can be started by running from the root directory:
+
+```
+python ./play.py
+```
