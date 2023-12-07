@@ -3,6 +3,7 @@ import sys
 import math
 
 
+#################### Calculator module, handling the text result calculation ################
 def calculator(text):
     final_result = {}
     result = timer()

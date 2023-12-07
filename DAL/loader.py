@@ -1,5 +1,8 @@
 from DAL import dbquery as db
 
+########### Loadeer module, handling databse and application communication #################
+
+
 all_data = []
 
 

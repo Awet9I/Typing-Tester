@@ -5,6 +5,8 @@ sys.path.append("..")
 from Text_Generator.text_generator import generator
 import sqlite3 as db
 
+######### Database query module ###############
+
 
 # create db connection
 def create_connection():

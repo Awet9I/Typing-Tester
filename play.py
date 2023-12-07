@@ -5,6 +5,8 @@ import json
 import plotter as pl
 import os
 
+################# Main testing module, that handles user app interaction #######################
+
 
 play = True
 counter = 0

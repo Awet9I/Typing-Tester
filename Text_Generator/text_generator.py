@@ -5,6 +5,8 @@ from num2words import num2words
 import re
 import time
 
+######## Text generator module #########
+
 
 # Function to filter out unwanted characters
 def filter_text(text):
@@ -62,11 +64,3 @@ def generator(phrase: str, num_word):
         return filtered_text
     except ValueError as e:
         print(e)
-
-
-if __name__ == "__main__":
-    """filtered_text = generator("Sommer day", 10)
-    print(filtered_text)"""
-    text = "1 and two and 3"
-    filtered_text = filter_text(text)
-    print(filtered_text)
